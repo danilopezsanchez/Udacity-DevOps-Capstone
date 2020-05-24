@@ -1,0 +1,45 @@
+Description:
+  Daniel López - Udacity DevOps Capstone Project Worker nodes
+
+Parameters:
+
+  EnvironmentName:
+    Description: Environment for Capstone Project
+    Type: String
+
+Resources:
+
+  NodeRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+        - "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+        - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+      Path: /
+
+  NodeGroup:
+    Type: 'AWS::EKS::Nodegroup'
+    Properties:
+      ClusterName: 
+        Fn::ImportValue: !Sub ${EnvironmentName}-EKS-Cluster
+      NodeRole: !GetAtt NodeRole.Arn
+      InstanceTypes:
+        - t3.medium
+      ScalingConfig:
+        MinSize: 2
+        DesiredSize: 3
+        MaxSize: 5
+      Subnets:
+        - Fn::ImportValue: !Sub ${EnvironmentName}-PUBLIC-SUBNET1
+        - Fn::ImportValue: !Sub ${EnvironmentName}-PUBLIC-SUBNET2
+        - Fn::ImportValue: !Sub ${EnvironmentName}-PUBLIC-SUBNET3

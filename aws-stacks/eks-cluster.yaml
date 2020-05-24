@@ -1,0 +1,47 @@
+Description:
+  Daniel López - Udacity DevOps Capstone Project
+  EKS cluster creation
+
+Parameters:
+
+  EnvironmentName:
+    Description: Environment for Capstone Project
+    Type: String
+
+Resources:
+
+  ClusterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          Effect: Allow
+          Principal:
+            Service:
+              - eks.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+        - arn:aws:iam::aws:policy/AmazonEKSServicePolicy
+
+  Cluster:
+    Type: "AWS::EKS::Cluster"
+    Properties:
+      Name: !Sub ${EnvironmentName}-EKS-Cluster
+      RoleArn: !GetAtt ClusterRole.Arn
+      ResourcesVpcConfig:
+        SecurityGroupIds:
+          - Fn::ImportValue: !Sub ${EnvironmentName}-SECURITY-GROUP
+        SubnetIds: 
+          - Fn::ImportValue: !Sub ${EnvironmentName}-PUBLIC-SUBNET1
+          - Fn::ImportValue: !Sub ${EnvironmentName}-PUBLIC-SUBNET2
+          - Fn::ImportValue: !Sub ${EnvironmentName}-PUBLIC-SUBNET3
+
+Outputs:
+
+  Cluster: 
+    Description: A reference to the cluster
+    Value: !Ref Cluster
+    Export:
+      Name: !Sub ${EnvironmentName}-EKS-Cluster
