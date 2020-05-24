@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: blue-controller
+spec:
+  replicas: 1
+  selector:
+    app: blue-controller
+  template:
+    metadata:
+      name: blue-controller
+      labels:
+        app: blue-controller
+    spec:
+      containers:
+      - name: blue-controller
+        image: overrider/capstonetest
+        ports:
+        - containerPort: 80
