@@ -7,4 +7,10 @@ pipeline{
 			}
 		}
 	}
+	stage('Build image') {
+			steps{
+				sh 'echo "Building image"'
+				sh './docker_run.sh'
+			}
+		}
 }
