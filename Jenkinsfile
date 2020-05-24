@@ -14,5 +14,13 @@ pipeline{
 			}
 		}
 
+		stage('Push image') {
+			steps{
+				withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+					sh './docker_upload.sh'
+				}
+			}
+		}
+
 	}
 }
