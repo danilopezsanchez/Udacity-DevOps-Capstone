@@ -22,5 +22,16 @@ pipeline{
 			}
 		}
 
+		stage('set kubectl context') {
+			steps{
+				withAWS(region:'us-east-2',credentials:'aws_access_key_id') {
+					sh '''
+					aws eks --region us-east-2 update-kubeconfig --name UdacityDevOpsCapstone-EKS-Cluster
+					kubectl config use-context arn:aws:eks:us-east-2:223008900821:cluster/UdacityDevOpsCapstone-EKS-Cluster
+					'''
+				}
+			}
+		}
+
 	}
 }
