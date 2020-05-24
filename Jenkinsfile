@@ -32,6 +32,7 @@ pipeline{
 				}
 			}
 		}
+
 		stage('Deploy blue controller') {
 			steps{
 				withAWS(region:'us-east-2',credentials:'aws_access_key_id') {
@@ -39,6 +40,7 @@ pipeline{
 				}
 			}
 		}
+
 		stage('Deploy green controller') {
 			steps{
 				withAWS(region:'us-east-2',credentials:'aws_access_key_id') {
@@ -46,6 +48,7 @@ pipeline{
 				}
 			}
 		}
+		
 		stage('Create loadbalancer service') {
 			steps{
 				withAWS(region:'us-east-2',credentials:'aws_access_key_id') {
